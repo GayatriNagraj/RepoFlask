@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/styles.css">
+    <title>Task Manager</title>
+</head>
+<body>
+    <h1>Task Manager</h1>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    <form action="{{ url_for('add_task') }}" method="post">
+        <label for="unique_id">Unique ID:</label>
+        <input type="text" id="unique_id" name="unique_id" required>
+        
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" required>
+        
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" required></textarea>
+        
+        <label for="task_done">Task Done:</label>
+        <input type="checkbox" id="task_done" name="task_done">
+        
+        <input type="submit" value="Add Task">
+    </form>
+    <h2>Tasks</h2>
+    <table>
+        <tr>
+            <th>Unique ID</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Task Done</th>
+            <th>Actions</th>
+        </tr>
+        {% for task in tasks %}
+        <tr>
+            <td>{{ task.unique_id }}</td>
+            <td>{{ task.title }}</td>
+            <td>{{ task.description }}</td>
+            <td>{{ task.task_done }}</td>
+            <td class="actions">
+                <button onclick="openUpdateModal('{{ task.unique_id }}', '{{ task.title }}', '{{ task.description }}', {{ 'true' if task.task_done else 'false' }})">Update</button>
+                <a href="{{ url_for('delete_task', unique_id=task.unique_id) }}" onclick="return confirm('Are you sure you want to delete this task?')">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <!-- Update Task Modal -->
+    <div id="updateModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeUpdateModal()">&times;</span>
+            <form id="updateTaskForm" action="{{ url_for('update_task') }}" method="post">
+                <input type="hidden" id="update_unique_id" name="unique_id">
+                
+                <label for="update_title">Title:</label>
+                <input type="text" id="update_title" name="title" required>
+                
+                <label for="update_description">Description:</label>
+                <textarea id="update_description" name="description" required></textarea>
+                
+                <label for="update_task_done">Task Done:</label>
+                <input type="checkbox" id="update_task_done" name="task_done">
+                
+                <input type="submit" value="Update Task">
+            </form>
+        </div>
+    </div>
+
+    <script src="../static/scripts.js"></script>
+</body>
+</html>
