@@ -15,6 +15,9 @@ db_config = {
 }
 
 def get_db_connection():
+    '''
+    Function to establish a connection to the database.
+    '''
     try:
         connection = mysql.connector.connect(**db_config)
         return connection
@@ -24,6 +27,9 @@ def get_db_connection():
 
 @app.route('/')
 def index():
+    '''
+    Function to render the index.html template and display the tasks by querying the database.
+    '''
     try:
         connection = get_db_connection()
         cursor = connection.cursor(dictionary=True)
